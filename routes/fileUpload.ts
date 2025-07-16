@@ -26,7 +26,8 @@ function handleZipFileUpload ({ file }: Request, res: Response, next: NextFuncti
     if (file?.buffer && !utils.disableOnContainerEnv()) {
       const buffer = file.buffer
       const filename = file.originalname.toLowerCase()
-      const tempFile = path.join(os.tmpdir(), filename)
+      const sanitizedFilename = path.basename(filename) // Sanitize the filename
+      const tempFile = path.join(os.tmpdir(), sanitizedFilename)
       fs.open(tempFile, 'w', function (err, fd) {
         if (err != null) { next(err) }
         fs.write(fd, buffer, 0, buffer.length, null, function (err) {
